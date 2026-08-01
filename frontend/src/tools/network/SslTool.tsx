@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { NETWORK_API_BASE, normalizeHostname } from '../../lib/network';
 
-const API = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/network` : 'https://api.developertoolkit.online/api/network';
+const API = NETWORK_API_BASE;
 
 const SslTool: React.FC = () => {
   const [host, setHost] = useState('');
@@ -9,10 +10,15 @@ const SslTool: React.FC = () => {
   const [error, setError] = useState('');
 
   const check = async () => {
-    if (!host.trim()) return;
+    const normalizedHost = normalizeHostname(host);
+    if (!normalizedHost) {
+      setError('Enter a valid hostname or URL.');
+      return;
+    }
+
     setLoading(true); setError(''); setResult(null);
     try {
-      const res = await fetch(`${API}/ssl?host=${encodeURIComponent(host.replace(/^https?:\/\//, '').split('/')[0])}`);
+      const res = await fetch(`${API}/ssl?host=${encodeURIComponent(normalizedHost)}`);
       const json = await res.json();
       if (!res.ok) throw new Error(json.message ?? 'SSL check failed');
       setResult(json);

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { NETWORK_API_BASE, normalizeHostname } from '../../lib/network';
 
-const API = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/network` : 'https://api.developertoolkit.online/api/network';
+const API = NETWORK_API_BASE;
 
 const WhoisTool: React.FC = () => {
   const [domain, setDomain] = useState('');
@@ -9,10 +10,15 @@ const WhoisTool: React.FC = () => {
   const [error, setError] = useState('');
 
   const lookup = async () => {
-    if (!domain.trim()) return;
+    const normalizedDomain = normalizeHostname(domain);
+    if (!normalizedDomain) {
+      setError('Enter a valid domain or hostname.');
+      return;
+    }
+
     setLoading(true); setError(''); setResult('');
     try {
-      const res = await fetch(`${API}/whois?domain=${encodeURIComponent(domain.trim())}`);
+      const res = await fetch(`${API}/whois?domain=${encodeURIComponent(normalizedDomain)}`);
       const json = await res.json();
       if (!res.ok) throw new Error(json.message ?? 'WHOIS lookup failed');
       setResult(json.raw ?? JSON.stringify(json, null, 2));

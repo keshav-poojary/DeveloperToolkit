@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import { NETWORK_API_BASE, normalizeHostname } from '../../lib/network';
 
 const RECORD_TYPES = ['A','AAAA','CNAME','MX','NS','TXT','SOA','SRV','PTR'];
-const API = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/network` : 'https://api.developertoolkit.online/api/network';
+const API = NETWORK_API_BASE;
 
 const DnsTool: React.FC = () => {
   const [domain, setDomain] = useState('');
@@ -11,10 +12,15 @@ const DnsTool: React.FC = () => {
   const [error, setError] = useState('');
 
   const lookup = async () => {
-    if (!domain.trim()) return;
+    const normalizedDomain = normalizeHostname(domain);
+    if (!normalizedDomain) {
+      setError('Enter a valid domain or hostname.');
+      return;
+    }
+
     setLoading(true); setError(''); setResults(null);
     try {
-      const res = await fetch(`${API}/dns?domain=${encodeURIComponent(domain.trim())}&type=${type}`);
+      const res = await fetch(`${API}/dns?domain=${encodeURIComponent(normalizedDomain)}&type=${type}`);
       const json = await res.json();
       if (!res.ok) throw new Error(json.message ?? 'DNS lookup failed');
       setResults(json.records ?? json);

@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { isIP } from 'net';
 import * as dns from 'dns/promises';
 import * as tls from 'tls';
 import axios from 'axios';
@@ -70,7 +71,17 @@ export class NetworkService {
 
   async ipInfo(ip?: string): Promise<Record<string, unknown>> {
     try {
-      const url = ip ? `https://ipapi.co/${ip}/json/` : 'https://ipapi.co/json/';
+      let lookupTarget = ip?.trim();
+      if (lookupTarget && !isIP(lookupTarget)) {
+        try {
+          const result = await dns.lookup(lookupTarget);
+          lookupTarget = result.address;
+        } catch (err: any) {
+          throw new BadRequestException(`Unable to resolve hostname: ${lookupTarget}`);
+        }
+      }
+
+      const url = lookupTarget ? `https://ipapi.co/${lookupTarget}/json/` : 'https://ipapi.co/json/';
       const { data } = await axios.get(url, { timeout: 10000 });
       if (data.error) throw new Error(data.reason ?? 'IP lookup failed');
       return {
@@ -87,6 +98,7 @@ export class NetworkService {
         map_url:      `https://www.openstreetmap.org/?mlat=${data.latitude}&mlon=${data.longitude}&zoom=12`,
       };
     } catch (err: any) {
+      if (err instanceof BadRequestException) throw err;
       throw new Error(`IP info failed: ${err.message}`);
     }
   }

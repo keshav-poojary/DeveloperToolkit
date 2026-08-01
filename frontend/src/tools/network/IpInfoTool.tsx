@@ -37,7 +37,7 @@ const IpInfoTool: React.FC = () => {
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold text-white mb-1">IP Address Info</h1>
-      <p className="text-gray-400 text-sm mb-2">Get geolocation and ISP info for any IP address. <span className="text-yellow-500 text-xs">Requires backend on :3001</span></p>
+      <p className="text-gray-400 text-sm mb-2">Get geolocation and ISP info for any IP address or hostname. <span className="text-yellow-500 text-xs">Uses the hosted API backend or VITE_API_URL.</span></p>
 
       <div className="flex items-center gap-3 mb-3">
         <input value={ip} onChange={e => setIp(e.target.value)} onKeyDown={e => e.key==='Enter' && lookup()}

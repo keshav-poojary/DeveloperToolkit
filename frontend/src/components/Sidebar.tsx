@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import AdSenseAd from './AdSenseAd';
-import AdminAdToggle from './AdminAdToggle';
+// AdminAdToggle removed per request
 import { useFavorites } from '../contexts/FavoritesContext';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -339,10 +339,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
           <AdSenseAd adSlot="1234567890" />
         </div>
 
-        {/* Admin toggle (visible when signed in) */}
-        <div className="px-3 pb-4">
-          <AdminAdToggle />
-        </div>
+        {/* Admin toggle removed */}
       </aside>
     </>
   );

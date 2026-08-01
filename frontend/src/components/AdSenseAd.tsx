@@ -10,7 +10,7 @@ const AdSenseAd: React.FC<{ adSlot?: string }> = ({ adSlot }) => {
   const slot = adSlot || env?.VITE_ADSENSE_SLOT || '1234567890';
 
   useEffect(() => {
-    if (!enabled) return;
+    // Always lazy-load ads when the component mounts; respect `enabled` when pushing ad call.
     if (!ref.current) return;
 
     let obs: IntersectionObserver | null = null;
@@ -24,7 +24,7 @@ const AdSenseAd: React.FC<{ adSlot?: string }> = ({ adSlot }) => {
     } catch (e) {}
 
     return () => { if (obs && ref.current) obs.unobserve(ref.current); };
-  }, [enabled]);
+  }, []);
 
   useEffect(() => {
     if (!enabled || !visible) return;

@@ -45,6 +45,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api/docs', app, document);
 
+  // Redirect legacy docs path to the current Swagger route
+  app.getHttpAdapter()?.getInstance().get('/docs', (_, res) => res.redirect('/api/docs'));
+
   const port = parseInt(process.env.PORT || '3001', 10);
   await app.listen(port);
   console.log(`🚀 DevToolkit backend running on http://localhost:${port}`);

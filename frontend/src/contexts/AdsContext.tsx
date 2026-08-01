@@ -8,10 +8,8 @@ type AdsContextType = {
 const AdsContext = createContext<AdsContextType | undefined>(undefined);
 
 export const AdsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const env: any = typeof import.meta !== 'undefined' ? (import.meta as any).env : process.env;
-  const envDefault = env?.VITE_ENABLE_ADS === 'true' || env?.VITE_ENABLE_ADS === true;
   const [enabled] = useState<boolean>(() => {
-    const seed = import.meta.env.VITE_ENABLE_ADS;
+    const seed = import.meta.env?.VITE_ENABLE_ADS;
     const saved = window.localStorage.getItem('ads_enabled');
     if (saved !== null) return saved === 'true';
     return seed === 'true';

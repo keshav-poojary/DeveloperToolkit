@@ -5,10 +5,9 @@ function getApiBase(): string {
     return import.meta.env.VITE_API_URL;
   }
 
-  // Priority 2: Production detection - use Railway backend
+  // Priority 2: Production detection - use hosted backend
   if (typeof window !== 'undefined' && window.location.hostname && !window.location.hostname.includes('localhost')) {
-    // On Vercel (*.vercel.app) - connect to Railway backend
-    return 'https://developertoolkit-production.up.railway.app';
+    return 'https://api.developertoolkit.online';
   }
 
   // Priority 3: Development fallback

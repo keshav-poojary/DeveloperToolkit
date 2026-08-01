@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const RECORD_TYPES = ['A','AAAA','CNAME','MX','NS','TXT','SOA','SRV','PTR'];
-const API = 'http://localhost:3001/api/network';
+const API = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/network` : 'https://api.developertoolkit.online/api/network';
 
 const DnsTool: React.FC = () => {
   const [domain, setDomain] = useState('');

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const API = 'http://localhost:3001/api/network';
+const API = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/network` : 'https://api.developertoolkit.online/api/network';
 
 const IpInfoTool: React.FC = () => {
   const [ip, setIp] = useState('');

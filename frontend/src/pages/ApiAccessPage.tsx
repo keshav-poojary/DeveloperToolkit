@@ -143,7 +143,7 @@ const ApiAccessPage: React.FC = () => {
       >
         <p className="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2">Base URL</p>
         <code className="text-sm text-indigo-300 font-mono">
-          {import.meta.env.VITE_API_URL || 'http://localhost:3001'}
+          {import.meta.env.VITE_API_URL || 'https://api.developertoolkit.online'}
         </code>
         <p className="text-xs text-gray-700 mt-2">
           Authenticate with: <code className="text-gray-500 bg-white/5 px-1.5 py-0.5 rounded text-[11px]">Authorization: Bearer dtk_...</code>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import CopyButton from '../../components/CopyButton';
 
-const API = 'http://localhost:3001/api/network';
+const API = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/network` : 'https://api.developertoolkit.online/api/network';
 
 const HeadersTool: React.FC = () => {
   const [url, setUrl] = useState('');

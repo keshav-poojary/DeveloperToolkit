@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import AdSenseAd from './AdSenseAd';
 import { Link, useLocation } from 'react-router-dom';
 import {
   Search, ChevronDown, X,
@@ -319,6 +320,10 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
             })
           )}
         </nav>
+        {/* Ad slot (replace adSlot prop with your specific ad unit ID) */}
+        <div className="flex-shrink-0 px-3 pb-4">
+          <AdSenseAd adSlot="1234567890" />
+        </div>
       </aside>
     </>
   );

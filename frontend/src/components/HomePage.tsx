@@ -1,4 +1,5 @@
 import React from 'react';
+import AdSenseAd from './AdSenseAd';
 import { Link } from 'react-router-dom';
 import { TOOLS, CATEGORIES } from '../data/tools';
 
@@ -65,6 +66,10 @@ const HomePage: React.FC = () => {
               <p className="text-[11px] text-gray-600 uppercase tracking-widest mt-0.5">{s.label}</p>
             </div>
           ))}
+        </div>
+        {/* Home page ad (renders only when VITE_ENABLE_ADS=true) */}
+        <div className="mt-6 mx-auto max-w-3xl">
+          <AdSenseAd />
         </div>
       </div>
 

@@ -41,7 +41,6 @@ const ContrastCheckerTool: React.FC = () => {
   const passesAA = ratio >= 4.5;
   const passesAALarge = ratio >= 3;
   const passesAAA = ratio >= 7;
-  const passesAAALarge = ratio >= 4.5;
 
   return (
     <div className="p-6 max-w-2xl mx-auto">

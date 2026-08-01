@@ -4,6 +4,7 @@ import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { TOOLS, CATEGORIES } from '../data/tools';
 import { api } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
+import { useAnalytics } from '../contexts/AnalyticsContext';
 
 const CAT_GLOW: Record<string, string> = {
   encoders: '#818cf8', formatters: '#38bdf8', generators: '#fbbf24',
@@ -14,6 +15,7 @@ const CAT_GLOW: Record<string, string> = {
 const ToolPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
+  const { recordToolUse } = useAnalytics();
   const tool = TOOLS.find(t => t.id === id);
 
   // Auto-save to history when a logged-in user visits a tool
@@ -26,6 +28,11 @@ const ToolPage: React.FC = () => {
       output: '',
     }).catch(() => { /* backend may not be running in dev */ });
   }, [tool?.id, user?.id]);
+
+  useEffect(() => {
+    if (!tool) return;
+    recordToolUse(tool.id);
+  }, [tool?.id]);
 
   if (!tool) {
     return (

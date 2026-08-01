@@ -55,6 +55,14 @@ body { background: #080810; color: #e2e8f0; }
 .animate-scale-in { animation: scale-in 0.3s ease both; }
 .animate-slide-left { animation: slide-in-left 0.25s ease both; }
 
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 .text-gradient {
   background: linear-gradient(135deg, #818cf8 0%, #c084fc 40%, #67e8f9 100%);
   background-size: 200% auto;

@@ -32,6 +32,11 @@ const App: React.FC = () => {
     return () => window.removeEventListener('keydown', h);
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = sidebarOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [sidebarOpen]);
+
   return (
     <HelmetProvider>
       <AuthProvider>
@@ -51,7 +56,7 @@ const App: React.FC = () => {
                 <span className="text-sm font-bold text-white tracking-tight">🛠️ DevToolkit</span>
               </div>
 
-              <main className="flex-1 overflow-y-auto">
+              <main className="flex-1 min-h-0 overflow-y-auto">
                 <Suspense fallback={<PageLoader />}>
                   <Routes>
                     <Route path="/"            element={<HomePage />} />

@@ -31,6 +31,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
   );
   const [hoveredCat, setHoveredCat] = useState<string | null>(null);
   const { user, logout } = useAuth();
+  const { favorites } = useFavorites();
   const searchRef = useRef<HTMLInputElement>(null);
   const currentId = location.pathname.split('/').pop();
 
@@ -66,15 +67,17 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
 
       <aside
         className={`
-          fixed md:relative inset-y-0 left-0 z-40 w-64 flex-shrink-0
+          fixed md:relative inset-y-0 left-0 z-40 w-full max-w-[22rem] md:w-72 flex-shrink-0
           flex flex-col h-full
           border-r border-white/[0.06]
           transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]
           ${open ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+          shadow-2xl md:shadow-none
         `}
         style={{
           background: 'linear-gradient(160deg, #0e0e1e 0%, #080810 60%, #0a0814 100%)',
           overflow: 'hidden',
+          backdropFilter: 'blur(18px)',
         }}
       >
         {/* ── Decorative background layers ───────────────────── */}
@@ -244,7 +247,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
         <div className="relative flex-shrink-0 h-px mx-3" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.07) 50%, transparent)' }} />
 
         {/* ── NAV ────────────────────────────────────────────── */}
-        <nav className="relative flex-1 overflow-y-auto px-2 pt-2 pb-4">
+        <nav className="relative flex-1 overflow-y-auto px-2 pt-2 pb-4 min-h-0">
 
           {/* Top nav items */}
           <div className="space-y-0.5 mb-1">
@@ -323,14 +326,24 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
           )}
         </nav>
         {/* Favorites quick bar */}
-        <div className="px-3 py-2">
-          <div className="text-[10px] uppercase tracking-widest text-gray-600 font-bold mb-2">Favorites</div>
-          <div className="flex gap-2 flex-wrap">
-            {useFavorites().favorites.slice(0,5).map(id => (
-              <Link key={id} to={`/tools/${id}`} onClick={onClose} className="px-2 py-1 rounded-md text-xs bg-white/3 text-white">
+        <div className="px-3 py-3 border-t border-white/5">
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <span className="text-[10px] uppercase tracking-widest text-gray-600 font-bold">Favorites</span>
+            <span className="text-[10px] text-gray-500">{favorites.length} saved</span>
+          </div>
+          <div className="flex gap-2 overflow-x-auto pb-1 hide-scrollbar">
+            {favorites.length > 0 ? favorites.slice(0, 6).map(id => (
+              <Link
+                key={id}
+                to={`/tools/${id}`}
+                onClick={onClose}
+                className="flex-shrink-0 px-3 py-1.5 rounded-full text-[11px] bg-indigo-500/10 text-indigo-200 border border-indigo-500/20 whitespace-nowrap"
+              >
                 {id}
               </Link>
-            ))}
+            )) : (
+              <span className="text-[11px] text-gray-500">Add favorites by tapping ★</span>
+            )}
           </div>
         </div>
 

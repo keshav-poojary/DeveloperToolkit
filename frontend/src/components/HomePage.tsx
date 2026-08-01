@@ -2,6 +2,7 @@ import React from 'react';
 import AdSenseAd from './AdSenseAd';
 import { Link } from 'react-router-dom';
 import { useFavorites } from '../contexts/FavoritesContext';
+import { useAnalytics } from '../contexts/AnalyticsContext';
 import { TOOLS, CATEGORIES } from '../data/tools';
 
 // Category → accent color (glow + border + text)
@@ -18,6 +19,10 @@ const CAT_COLORS: Record<string, { glow: string; border: string; text: string; b
 
 const HomePage: React.FC = () => {
   const popular = TOOLS.filter(t => t.popular);
+  const { topTools } = useAnalytics();
+  const topUsed = topTools(4)
+    .map(item => ({ ...item, tool: TOOLS.find(t => t.id === item.toolId) }))
+    .filter(item => item.tool);
 
   return (
     <div className="min-h-full">
@@ -73,6 +78,21 @@ const HomePage: React.FC = () => {
           <AdSenseAd />
         </div>
       </div>
+
+      {topUsed.length > 0 && (
+        <section className="px-5 pb-8 max-w-7xl mx-auto">
+          <SectionHeader icon="📈" label="Top tools in your browser" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+            {topUsed.map(item => (
+              <Link key={item.toolId} to={`/tools/${item.toolId}`} className="group rounded-3xl border border-white/10 bg-white/5 p-4 transition hover:border-indigo-500/30 hover:bg-indigo-500/5">
+                <div className="text-3xl mb-3">{item.tool?.icon}</div>
+                <div className="text-sm font-semibold text-white mb-1">{item.tool?.name}</div>
+                <div className="text-[11px] text-gray-400">Used {item.count} time{item.count === 1 ? '' : 's'} locally</div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       <div className="px-5 pb-12 max-w-7xl mx-auto">
 

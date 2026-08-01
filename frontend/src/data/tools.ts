@@ -9,6 +9,7 @@ export const CATEGORIES: Category[] = [
   { id: 'text',       name: 'Text Tools',            icon: '📝', color: 'text-pink-400' },
   { id: 'dev',        name: 'Dev Tools',             icon: '🛠️', color: 'text-orange-400' },
   { id: 'network',    name: 'Network',               icon: '🌐', color: 'text-cyan-400' },
+  { id: 'visualizer', name: 'Visualizer',            icon: '🎴', color: 'text-fuchsia-400' },
   { id: 'misc',       name: 'Misc',                  icon: '🔧', color: 'text-gray-400' },
 ];
 
@@ -83,6 +84,7 @@ export const TOOLS: Tool[] = [
   { id: 'headers',       name: 'HTTP Headers',             description: 'Fetch and inspect HTTP response headers.',                  category: 'network',    icon: '📨', tags: ['http','headers','response','request'],                    component: lazy(() => import('../tools/network/HeadersTool')) },
   { id: 'ip-info',       name: 'IP Address Info',          description: 'Get geolocation and ISP info for any IP.',                  category: 'network',    icon: '📍', tags: ['ip','geolocation','address','info'],                      component: lazy(() => import('../tools/network/IpInfoTool')) },
   { id: 'whois',         name: 'WHOIS Lookup',             description: 'Look up domain registration information.',                  category: 'network',    icon: '🏢', tags: ['whois','domain','registration'],                          component: lazy(() => import('../tools/network/WhoisTool')) },
+  { id: 'github-visualizer', name: 'GitHub Visualizer',      description: 'Generate animated GitHub repo cards with metadata and download options.', category: 'visualizer', icon: '🎴', tags: ['github','visualizer','card','repo','download','svg'], popular: true, component: lazy(() => import('../tools/visualizer/GithubVisualizerTool')) },
 
   // ── MISC ─────────────────────────────────────────────────────────────
   { id: 'credit-card',   name: 'Credit Card Validator',    description: 'Validate card numbers using the Luhn algorithm.',          category: 'misc',       icon: '💳', tags: ['credit','card','luhn','validate'],                        component: lazy(() => import('../tools/misc/CreditCardTool')) },

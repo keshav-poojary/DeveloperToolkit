@@ -3,6 +3,18 @@ import CopyButton from '../../components/CopyButton';
 
 const API = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/network` : 'https://api.developertoolkit.online/api/network';
 
+const normalizeUrl = (value: string): string => {
+  const trimmed = value.trim();
+  if (!trimmed) return '';
+  const hasScheme = /^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(trimmed);
+  const normalized = hasScheme ? trimmed : `https://${trimmed}`;
+  try {
+    return new URL(normalized).href;
+  } catch {
+    return '';
+  }
+};
+
 const HeadersTool: React.FC = () => {
   const [url, setUrl] = useState('');
   const [headers, setHeaders] = useState<Record<string, string> | null>(null);
@@ -11,10 +23,15 @@ const HeadersTool: React.FC = () => {
   const [error, setError] = useState('');
 
   const fetch_ = async () => {
-    if (!url.trim()) return;
+    const normalizedUrl = normalizeUrl(url);
+    if (!normalizedUrl) {
+      setError('Enter a valid URL, for example example.com or https://example.com');
+      return;
+    }
+
     setLoading(true); setError(''); setHeaders(null);
     try {
-      const res = await fetch(`${API}/headers?url=${encodeURIComponent(url)}`);
+      const res = await fetch(`${API}/headers?url=${encodeURIComponent(normalizedUrl)}`);
       const json = await res.json();
       if (!res.ok) throw new Error(json.message ?? 'Failed to fetch headers');
       setHeaders(json.headers);
@@ -26,7 +43,10 @@ const HeadersTool: React.FC = () => {
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold text-white mb-1">HTTP Headers</h1>
-      <p className="text-gray-400 text-sm mb-2">Fetch and inspect HTTP response headers for any URL. <span className="text-yellow-500 text-xs">Requires backend on :3001</span></p>
+      <p className="text-gray-400 text-sm mb-2">
+        Fetch and inspect HTTP response headers for any URL.
+        <span className="text-yellow-500 text-xs"> Uses the hosted API backend or VITE_API_URL when configured.</span>
+      </p>
 
       <div className="flex items-center gap-3 mb-5">
         <input value={url} onChange={e => setUrl(e.target.value)} onKeyDown={e => e.key==='Enter' && fetch_()}

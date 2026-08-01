@@ -6,7 +6,17 @@ const path = require('path');
 // previous hashed filename continue to work until caches expire.
 
 const distAssets = path.join(__dirname, '..', 'dist', 'assets');
-const legacyName = 'index-DphsNMbW.js';
+// A newline-separated file with legacy asset basenames (in dist/assets) to emit.
+const legacyListFile = path.join(__dirname, 'legacy-names.txt');
+
+let legacyNames = ['index-DphsNMbW.js'];
+if (fs.existsSync(legacyListFile)) {
+  try {
+    const contents = fs.readFileSync(legacyListFile, 'utf8');
+    const lines = contents.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+    if (lines.length) legacyNames = lines;
+  } catch (e) { /* ignore */ }
+}
 
 function findIndexBundle() {
   if (!fs.existsSync(distAssets)) return null;
@@ -26,16 +36,18 @@ function copyLegacy() {
   }
 
   const src = path.join(distAssets, bundle);
-  const dst = path.join(distAssets, legacyName);
-  fs.copyFileSync(src, dst);
-  console.log(`Copied ${bundle} -> ${legacyName}`);
+  for (const legacyName of legacyNames) {
+    const dst = path.join(distAssets, legacyName);
+    fs.copyFileSync(src, dst);
+    console.log(`Copied ${bundle} -> ${legacyName}`);
 
-  // copy source map if present
-  const mapSrc = src + '.map';
-  const mapDst = dst + '.map';
-  if (fs.existsSync(mapSrc)) {
-    fs.copyFileSync(mapSrc, mapDst);
-    console.log('Copied source map to', mapDst);
+    // copy source map if present
+    const mapSrc = src + '.map';
+    const mapDst = dst + '.map';
+    if (fs.existsSync(mapSrc)) {
+      fs.copyFileSync(mapSrc, mapDst);
+      console.log('Copied source map to', mapDst);
+    }
   }
 }
 

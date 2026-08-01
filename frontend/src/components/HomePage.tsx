@@ -1,6 +1,7 @@
 import React from 'react';
 import AdSenseAd from './AdSenseAd';
 import { Link } from 'react-router-dom';
+import { useFavorites } from '../contexts/FavoritesContext';
 import { TOOLS, CATEGORIES } from '../data/tools';
 
 // Category → accent color (glow + border + text)
@@ -120,6 +121,7 @@ const SectionHeader: React.FC<{ icon: string; label: string; count?: number; tex
 
 const ToolCard: React.FC<{ tool: { id: string; name: string; description: string; icon: string; popular?: boolean }; catId: string }> = ({ tool, catId }) => {
   const col = CAT_COLORS[catId] || CAT_COLORS.misc;
+  const { has, toggle } = useFavorites();
   return (
     <Link
       to={`/tools/${tool.id}`}
@@ -164,6 +166,11 @@ const ToolCard: React.FC<{ tool: { id: string; name: string; description: string
         <p className="text-[11px] text-gray-600 group-hover:text-gray-500 transition-colors leading-snug line-clamp-2">
           {tool.description}
         </p>
+      </div>
+      <div className="absolute top-2 right-2">
+        <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggle(tool.id); }} className="text-sm text-white/70">
+          {has(tool.id) ? '★' : '☆'}
+        </button>
       </div>
     </Link>
   );

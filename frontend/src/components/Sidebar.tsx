@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import AdSenseAd from './AdSenseAd';
+import AdminAdToggle from './AdminAdToggle';
+import { useFavorites } from '../contexts/FavoritesContext';
 import { Link, useLocation } from 'react-router-dom';
 import {
   Search, ChevronDown, X,
@@ -320,9 +322,26 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
             })
           )}
         </nav>
+        {/* Favorites quick bar */}
+        <div className="px-3 py-2">
+          <div className="text-[10px] uppercase tracking-widest text-gray-600 font-bold mb-2">Favorites</div>
+          <div className="flex gap-2 flex-wrap">
+            {useFavorites().favorites.slice(0,5).map(id => (
+              <Link key={id} to={`/tools/${id}`} onClick={onClose} className="px-2 py-1 rounded-md text-xs bg-white/3 text-white">
+                {id}
+              </Link>
+            ))}
+          </div>
+        </div>
+
         {/* Ad slot (replace adSlot prop with your specific ad unit ID) */}
         <div className="flex-shrink-0 px-3 pb-4">
           <AdSenseAd adSlot="1234567890" />
+        </div>
+
+        {/* Admin toggle (visible when signed in) */}
+        <div className="px-3 pb-4">
+          <AdminAdToggle />
         </div>
       </aside>
     </>
@@ -360,6 +379,7 @@ const ToolItem: React.FC<{
   active: boolean; catId: string; onClick?: () => void;
 }> = ({ tool, active, catId, onClick }) => {
   const col = CAT_COLORS[catId] || CAT_COLORS.misc;
+  const { has, toggle } = useFavorites();
   return (
     <Link
       to={`/tools/${tool.id}`}
@@ -396,6 +416,13 @@ const ToolItem: React.FC<{
         {tool.icon}
       </span>
       <span className="relative truncate flex-1">{tool.name}</span>
+      <button
+        onClick={e => { e.preventDefault(); e.stopPropagation(); toggle(tool.id); }}
+        title={has(tool.id) ? 'Unfavorite' : 'Favorite'}
+        className="ml-2 text-[11px] text-gray-400 hover:text-white"
+      >
+        {has(tool.id) ? '★' : '☆'}
+      </button>
       {tool.popular && !active && (
         <span
           className="relative text-[9px] font-black flex-shrink-0"

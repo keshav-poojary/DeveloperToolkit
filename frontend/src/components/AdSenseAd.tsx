@@ -1,24 +1,40 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useAds } from '../contexts/AdsContext';
 
 const AdSenseAd: React.FC<{ adSlot?: string }> = ({ adSlot }) => {
   const ref = useRef<HTMLDivElement | null>(null);
+  const { enabled } = useAds();
+  const [visible, setVisible] = useState(false);
 
-  // Read Vite env flags (set in frontend/.env or process) to toggle ads and provide slot
   const env: any = typeof import.meta !== 'undefined' ? (import.meta as any).env : process.env;
-  const ENABLE_ADS = env?.VITE_ENABLE_ADS === 'true' || env?.VITE_ENABLE_ADS === true;
   const slot = adSlot || env?.VITE_ADSENSE_SLOT || '1234567890';
 
   useEffect(() => {
-    if (!ENABLE_ADS) return;
+    if (!enabled) return;
+    if (!ref.current) return;
+
+    let obs: IntersectionObserver | null = null;
+    try {
+      obs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) setVisible(true);
+        });
+      }, { threshold: 0.1 });
+      obs.observe(ref.current);
+    } catch (e) {}
+
+    return () => { if (obs && ref.current) obs.unobserve(ref.current); };
+  }, [enabled]);
+
+  useEffect(() => {
+    if (!enabled || !visible) return;
     try {
       // @ts-ignore
       (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) {
-      // ignore if adsbygoogle isn't ready yet
-    }
-  }, [ENABLE_ADS]);
+    } catch (e) {}
+  }, [enabled, visible]);
 
-  if (!ENABLE_ADS) return null;
+  if (!enabled) return null;
 
   return (
     <div ref={ref} className="px-3 py-2">

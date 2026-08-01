@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useState } from 'react';
+import React, { Suspense, lazy, useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Menu } from 'lucide-react';
@@ -6,6 +6,7 @@ import Sidebar from './components/Sidebar';
 import HomePage from './components/HomePage';
 import ToolPage from './components/ToolPage';
 import { AuthProvider } from './contexts/AuthContext';
+import KeyboardShortcuts from './components/KeyboardShortcuts';
 
 const LoginPage    = lazy(() => import('./pages/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
@@ -21,6 +22,15 @@ const PageLoader = () => (
 
 const App: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => {
+      if (e.key === '?') setShortcutsOpen(s => !s);
+    };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, []);
 
   return (
     <HelmetProvider>
@@ -53,6 +63,7 @@ const App: React.FC = () => {
                   </Routes>
                 </Suspense>
               </main>
+              <KeyboardShortcuts open={shortcutsOpen} onClose={() => setShortcutsOpen(false)} />
             </div>
           </div>
         </BrowserRouter>
